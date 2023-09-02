@@ -7,8 +7,12 @@ import { UsersRepository } from './users.repository';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    return await this.usersRepository.create(createUserDto);
+  }
+
+  async findByEmail(email: string) {
+    return await this.usersRepository.findByEmail(email);
   }
 
   findAll() {
