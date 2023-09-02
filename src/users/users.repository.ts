@@ -20,4 +20,8 @@ export class UsersRepository {
   findByEmail(email: string) {
     return this.prisma.user.findUnique({ where: { email } });
   }
+
+  findUnique(id: number) {
+    return this.prisma.user.findUnique({ where: { id } });
+  }
 }
