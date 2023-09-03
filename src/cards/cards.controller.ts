@@ -3,15 +3,16 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { CreateCardDto } from './dto/create-card.dto';
-import { UpdateCardDto } from './dto/update-card.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { User as RequestUser } from 'src/decorators/user.decorator';
+import { User } from '@prisma/client';
 
 @UseGuards(AuthGuard)
 @Controller('cards')
@@ -19,27 +20,28 @@ export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
 
   @Post()
-  create(@Body() createCardDto: CreateCardDto) {
-    return this.cardsService.create(createCardDto);
+  create(@Body() createCardDto: CreateCardDto, @RequestUser() user: User) {
+    return this.cardsService.create(user, createCardDto);
   }
 
   @Get()
-  findAll() {
-    return this.cardsService.findAll();
+  findAll(@RequestUser() user: User) {
+    return this.cardsService.findAll(user);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cardsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCardDto: UpdateCardDto) {
-    return this.cardsService.update(+id, updateCardDto);
+  findOne(
+    @Param('id', new ParseIntPipe()) id: number,
+    @RequestUser() user: User,
+  ) {
+    return this.cardsService.findOne(user, id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cardsService.remove(+id);
+  remove(
+    @Param('id', new ParseIntPipe()) id: number,
+    @RequestUser() user: User,
+  ) {
+    return this.cardsService.remove(user, id);
   }
 }

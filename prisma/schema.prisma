@@ -53,6 +53,7 @@ model Notes{
 
 model Cards {
   id        Int   @id @default(autoincrement())
+  label     String
   number   String
   validationCode   String
   validationDate   String
@@ -65,6 +66,6 @@ model Cards {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, number])
+  @@unique([userId, label])
   @@map("cards")
 }
