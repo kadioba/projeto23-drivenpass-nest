@@ -19,11 +19,14 @@ model User {
   credentials     Credentials[]
   notes           Notes[]
   cards           Cards[]
+
+  @@map("users")
 }
 
 model Credentials {
   id        Int   @id @default(autoincrement())
-  username  String   @unique
+  url       String
+  username  String
   password  String
   label     String
   user      User     @relation(fields: [userId], references: [id])
@@ -32,7 +35,7 @@ model Credentials {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, label])
-  @@map("medias")
+  @@map("credentials")
 }
 
 model Notes{

@@ -7,6 +7,7 @@ import { CredentialsModule } from './credentials/credentials.module';
 import { NotesModule } from './notes/notes.module';
 import { CardsModule } from './cards/cards.module';
 import { AuthModule } from './auth/auth.module';
+import { CryptrModule } from './cryptr/cryptr.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
     NotesModule,
     CardsModule,
     AuthModule,
+    CryptrModule,
   ],
   controllers: [AppController],
   providers: [AppService],
