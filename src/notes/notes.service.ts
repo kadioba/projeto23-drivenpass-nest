@@ -1,28 +1,45 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
-import { UpdateNoteDto } from './dto/update-note.dto';
 import { NotesRepository } from './notes.repository';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class NotesService {
   constructor(private readonly notesRepository: NotesRepository) {}
-  create(createNoteDto: CreateNoteDto) {
-    return 'This action adds a new note';
+
+  async create(user: User, createNoteDto: CreateNoteDto) {
+    const noteExists = await this.notesRepository.findByTitle(
+      user,
+      createNoteDto.title,
+    );
+    if (noteExists) {
+      throw new ConflictException('Note already exists');
+    }
+    return await this.notesRepository.create(user, createNoteDto);
   }
 
-  findAll() {
-    return `This action returns all notes`;
+  async findAll(user: User) {
+    return await this.notesRepository.findAll(user);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} note`;
+  async findOne(user: User, id: number) {
+    const note = await this.notesRepository.findUnique(id);
+    if (!note) {
+      throw new NotFoundException('Note does not exist');
+    }
+    if (note.userId !== user.id) {
+      throw new ForbiddenException('Note does not belong to user');
+    }
+    return note;
   }
 
-  update(id: number, updateNoteDto: UpdateNoteDto) {
-    return `This action updates a #${id} note`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} note`;
+  async remove(user: User, id: number) {
+    const note = await this.findOne(user, id);
+    return this.notesRepository.remove(note.id);
   }
 }
