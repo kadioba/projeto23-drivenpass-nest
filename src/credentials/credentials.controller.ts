@@ -13,13 +13,22 @@ import { CreateCredentialDto } from './dto/create-credential.dto';
 import { AuthGuard } from '../guards/auth.guard';
 import { User as RequestUser } from '../decorators/user.decorator';
 import { User } from '@prisma/client';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('Credentials')
+@ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('credentials')
 export class CredentialsController {
   constructor(private readonly credentialsService: CredentialsService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a user credential' })
   create(
     @Body() createCredentialDto: CreateCredentialDto,
     @RequestUser() user: User,
@@ -28,11 +37,14 @@ export class CredentialsController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all user credentials' })
   findAll(@RequestUser() user: User) {
     return this.credentialsService.findAll(user);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a user credential' })
+  @ApiParam({ name: 'id', description: 'Credential ID', example: 1 })
   findOne(
     @Param('id', new ParseIntPipe()) id: number,
     @RequestUser() user: User,
@@ -41,6 +53,8 @@ export class CredentialsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a user credential' })
+  @ApiParam({ name: 'id', description: 'Credential ID', example: 1 })
   remove(
     @Param('id', new ParseIntPipe()) id: number,
     @RequestUser() user: User,
