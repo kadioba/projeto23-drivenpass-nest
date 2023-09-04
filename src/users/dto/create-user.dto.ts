@@ -14,4 +14,8 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   password: string;
+
+  constructor(params?: Partial<CreateUserDto>) {
+    Object.assign(this, params);
+  }
 }

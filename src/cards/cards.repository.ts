@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { CryptrService } from 'src/cryptr/cryptr.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { CryptrService } from '../cryptr/cryptr.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateCardDto } from './dto/create-card.dto';
 
 @Injectable()

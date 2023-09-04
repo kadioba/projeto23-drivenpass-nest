@@ -16,8 +16,8 @@ export class AppService {
     private readonly cardsService: CardsService,
     private readonly usersService: UsersService,
   ) {}
-  getHello(): string {
-    return 'Hello World!';
+  getHealth(): string {
+    return 'I’m okay!';
   }
 
   async eraseAccount(user: User, eraseUserDto: EraseUserDto) {

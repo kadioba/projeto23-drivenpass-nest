@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { CreateCardDto } from './dto/create-card.dto';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { User as RequestUser } from 'src/decorators/user.decorator';
+import { AuthGuard } from '../guards/auth.guard';
+import { User as RequestUser } from '../decorators/user.decorator';
 import { User } from '@prisma/client';
 
 @UseGuards(AuthGuard)

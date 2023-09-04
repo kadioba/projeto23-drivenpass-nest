@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateCardDto } from './dto/create-card.dto';
 import { CardsRepository } from './cards.repository';
-import { CryptrService } from 'src/cryptr/cryptr.service';
+import { CryptrService } from '../cryptr/cryptr.service';
 import { User } from '@prisma/client';
 
 @Injectable()
