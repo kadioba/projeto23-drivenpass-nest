@@ -21,11 +21,10 @@ export class AppService {
   }
 
   async eraseAccount(user: User, eraseUserDto: EraseUserDto) {
-    this.authService.checkPassword(user, eraseUserDto.password);
+    await this.authService.checkPassword(user, eraseUserDto.password);
     await this.credentialsService.deleteAll(user);
     await this.notesService.deleteAll(user);
     await this.cardsService.deleteAll(user);
     await this.usersService.delete(user);
-    return 'Account deleted';
   }
 }

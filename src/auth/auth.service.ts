@@ -64,8 +64,8 @@ export class AuthService {
     return { token };
   }
 
-  checkPassword(user: User, password: string) {
-    const valid = bcrypt.compare(password, user.password);
+  async checkPassword(user: User, password: string) {
+    const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
       throw new UnauthorizedException('User or password is incorrect');
     }

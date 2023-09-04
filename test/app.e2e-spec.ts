@@ -49,7 +49,36 @@ describe('AppController (e2e)', () => {
       .expect('I’m okay!');
   });
 
-  it('DELETE /erase => should delete all user data', async () => {
+  it('DELETE /erase => should return Forbidden if user is not authenticated', async () => {
+    const response = await request(app.getHttpServer()).delete('/erase');
+
+    expect(response.status).toBe(403);
+  });
+
+  it('DELETE /erase => should return Unauthorized if password is wrong', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, user);
+
+    const response = await request(app.getHttpServer())
+      .delete('/erase')
+      .set('Authorization', `Bearer ${token.token}`)
+      .send({ password: 'wrong password' });
+
+    expect(response.status).toBe(401);
+  });
+
+  it('DELETE /erase => should return Bad Request if body is invalid', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, user);
+
+    const response = await request(app.getHttpServer())
+      .delete('/erase')
+      .set('Authorization', `Bearer ${token.token}`);
+
+    expect(response.status).toBe(400);
+  });
+
+  it('DELETE /erase => should return Ok and delete all user data', async () => {
     const user = await new UserFactory(prisma).persist();
     const token = await E2EUtils.authenticate(jwt, user);
     const credential = await new CredentialsFactory(prisma, cryptr).persist(

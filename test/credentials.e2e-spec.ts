@@ -42,7 +42,75 @@ describe('Auth E2E Tests (e2e)', () => {
     await E2EUtils.cleanDb(prisma);
   });
 
-  it('POST /cards => should return 201', async () => {
+  it('POST /credentials => should return Bad Request if body is invalid', async () => {
+    const credential: CreateCredentialDto = new CreateCredentialDto({
+      url: faker.internet.url(),
+      username: faker.internet.userName(),
+      label: faker.lorem.word(),
+    });
+
+    const user = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, user);
+
+    const response = await request(app.getHttpServer())
+      .post('/credentials')
+      .set('Authorization', `Bearer ${token.token}`)
+      .send({
+        ...credential,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('POST /credentials => should return Conflict if credential label already exists', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, user);
+    const credential = await new CredentialsFactory(prisma, cryptr).persist(
+      user,
+    );
+    const newCredential: CreateCredentialDto = new CreateCredentialDto({
+      url: faker.internet.url(),
+      username: faker.internet.userName(),
+      password: faker.internet.password(),
+      label: credential.label,
+    });
+
+    const response = await request(app.getHttpServer())
+      .post('/credentials')
+      .set('Authorization', `Bearer ${token.token}`)
+      .send({
+        ...newCredential,
+      });
+
+    expect(response.status).toBe(409);
+  });
+
+  it('POST /credentials => should return return Ok even if other user uses same label', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const credential = await new CredentialsFactory(prisma, cryptr).persist(
+      user,
+    );
+
+    const user2 = await new UserFactory(prisma).persist();
+    const token2 = await E2EUtils.authenticate(jwt, user2);
+    const newCredential: CreateCredentialDto = new CreateCredentialDto({
+      url: faker.internet.url(),
+      username: faker.internet.userName(),
+      password: faker.internet.password(),
+      label: credential.label,
+    });
+
+    const response = await request(app.getHttpServer())
+      .post('/credentials')
+      .set('Authorization', `Bearer ${token2.token}`)
+      .send({
+        ...newCredential,
+      });
+
+    expect(response.status).toBe(201);
+  });
+
+  it('POST /credentials => should return 201', async () => {
     const credential: CreateCredentialDto = new CreateCredentialDto({
       url: faker.internet.url(),
       username: faker.internet.userName(),
@@ -87,6 +155,41 @@ describe('Auth E2E Tests (e2e)', () => {
     ]);
   });
 
+  it('GET /credentials/:id => should return Not Found if credential does not exist', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, user);
+    const credential = await new CredentialsFactory(prisma, cryptr).persist(
+      user,
+    );
+    await prisma.credentials.delete({
+      where: {
+        id: credential.id,
+      },
+    });
+
+    const response = await request(app.getHttpServer())
+      .get(`/credentials/${credential.id}`)
+      .set('Authorization', `Bearer ${token.token}`);
+
+    expect(response.status).toBe(404);
+  });
+
+  it('GET /credentials/:id => should return Forbidden if credential belongs to another user', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const credential = await new CredentialsFactory(prisma, cryptr).persist(
+      user,
+    );
+
+    const user2 = await new UserFactory(prisma).persist();
+    const token2 = await E2EUtils.authenticate(jwt, user2);
+
+    const response = await request(app.getHttpServer())
+      .get(`/credentials/${credential.id}`)
+      .set('Authorization', `Bearer ${token2.token}`);
+
+    expect(response.status).toBe(403);
+  });
+
   it('GET /credentials/:id => should return 200 and credential', async () => {
     const user = await new UserFactory(prisma).persist();
     const token = await E2EUtils.authenticate(jwt, user);
@@ -106,6 +209,41 @@ describe('Auth E2E Tests (e2e)', () => {
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
     });
+  });
+
+  it('DELETE /credentials/:id => should return Not Found if credential does not exist', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, user);
+    const credential = await new CredentialsFactory(prisma, cryptr).persist(
+      user,
+    );
+    await prisma.credentials.delete({
+      where: {
+        id: credential.id,
+      },
+    });
+
+    const response = await request(app.getHttpServer())
+      .delete(`/credentials/${credential.id}`)
+      .set('Authorization', `Bearer ${token.token}`);
+
+    expect(response.status).toBe(404);
+  });
+
+  it('DELETE /credentials/:id => should return Forbidden if credential belongs to another user', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const credential = await new CredentialsFactory(prisma, cryptr).persist(
+      user,
+    );
+
+    const user2 = await new UserFactory(prisma).persist();
+    const token2 = await E2EUtils.authenticate(jwt, user2);
+
+    const response = await request(app.getHttpServer())
+      .delete(`/credentials/${credential.id}`)
+      .set('Authorization', `Bearer ${token2.token}`);
+
+    expect(response.status).toBe(403);
   });
 
   it('DELETE /credentials/:id => should delete a credential', async () => {

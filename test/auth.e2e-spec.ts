@@ -29,6 +29,51 @@ describe('Auth E2E Tests (e2e)', () => {
     await E2EUtils.cleanDb(prisma);
   });
 
+  it('POST /users/sign-up => should return BadRequest if body is invalid', async () => {
+    const user: SignUpDto = new SignUpDto({
+      email: faker.internet.email(),
+    });
+
+    const response = await request(app.getHttpServer())
+      .post('/users/sign-up')
+      .send({
+        ...user,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('POST /users/sign-up => should return BadRequest if password id weak', async () => {
+    const user: SignUpDto = new SignUpDto({
+      email: faker.internet.email(),
+      password: '123',
+    });
+
+    const response = await request(app.getHttpServer())
+      .post('/users/sign-up')
+      .send({
+        ...user,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('POST /users/sign-up => should return Conflict if email is already registered', async () => {
+    const userRegistered = await new UserFactory(prisma).persist();
+    const newUser: SignUpDto = new SignUpDto({
+      email: userRegistered.email,
+      password: userRegistered.password,
+    });
+
+    const response = await request(app.getHttpServer())
+      .post('/users/sign-up')
+      .send({
+        ...newUser,
+      });
+
+    expect(response.status).toBe(409);
+  });
+
   it('POST /user/sign-up => should return 201', async () => {
     const user: SignUpDto = new SignUpDto({
       email: faker.internet.email(),
@@ -44,7 +89,34 @@ describe('Auth E2E Tests (e2e)', () => {
     expect(response.status).toBe(201);
   });
 
-  it('POST /user/sign-in => should return 200', async () => {
+  it('POST /user/sign-in => should return BadRequest if body is invalid', async () => {
+    const user: SignUpDto = new SignUpDto({
+      email: faker.internet.email(),
+    });
+
+    const response = await request(app.getHttpServer())
+      .post('/users/sign-in')
+      .send({
+        ...user,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('POST /user/sign-in => should return Unauthorized if password is wrong', async () => {
+    const user = await new UserFactory(prisma).persist();
+
+    const response = await request(app.getHttpServer())
+      .post('/users/sign-in')
+      .send({
+        email: user.email,
+        password: 'wrong password',
+      });
+
+    expect(response.status).toBe(401);
+  });
+
+  it('POST /user/sign-in => should return 200 and a token', async () => {
     const user = await new UserFactory(prisma).persist();
 
     const response = await request(app.getHttpServer())
