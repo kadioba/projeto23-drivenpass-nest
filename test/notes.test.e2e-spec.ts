@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { E2EUtils } from './utils/e2e.utils';
-import { fa, faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { UserFactory } from './factories/user.factory';
 import * as request from 'supertest';
 import { JwtService } from '@nestjs/jwt';

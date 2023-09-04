@@ -42,6 +42,72 @@ describe('Auth E2E Tests (e2e)', () => {
     await E2EUtils.cleanDb(prisma);
   });
 
+  it('POST /cards => should return Bad Request if body is invalid', async () => {
+    const card: CreateCardDto = new CreateCardDto({
+      label: faker.lorem.word(),
+      number: faker.finance.creditCardNumber(),
+      validationCode: faker.finance.creditCardCVV(),
+    });
+
+    const user = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, user);
+
+    const response = await request(app.getHttpServer())
+      .post('/cards')
+      .set('Authorization', `Bearer ${token.token}`)
+      .send({
+        ...card,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('POST /cards => should return Conflict if user already has a card with the same label', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, user);
+    const card = await new CardsFactory(prisma, cryptr).persist(user);
+
+    const response = await request(app.getHttpServer())
+      .post('/cards')
+      .set('Authorization', `Bearer ${token.token}`)
+      .send({
+        label: card.label,
+        number: card.number,
+        validationCode: card.validationCode,
+        validationDate: card.validationDate,
+        password: card.password,
+        isVirtual: card.isVirtual,
+        isCredit: card.isCredit,
+        isDebit: card.isDebit,
+      });
+
+    expect(response.status).toBe(409);
+  });
+
+  it('POST /cards => should return 201 even if another user already has a card with the same label', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const card = await new CardsFactory(prisma, cryptr).persist(user);
+
+    const anotherUser = await new UserFactory(prisma).persist();
+    const anotherToken = await E2EUtils.authenticate(jwt, anotherUser);
+
+    const response = await request(app.getHttpServer())
+      .post('/cards')
+      .set('Authorization', `Bearer ${anotherToken.token}`)
+      .send({
+        label: card.label,
+        number: card.number,
+        validationCode: card.validationCode,
+        validationDate: card.validationDate,
+        password: card.password,
+        isVirtual: card.isVirtual,
+        isCredit: card.isCredit,
+        isDebit: card.isDebit,
+      });
+
+    expect(response.status).toBe(201);
+  });
+
   it('POST /cards => should return 201', async () => {
     const card: CreateCardDto = new CreateCardDto({
       label: faker.lorem.word(),
@@ -89,6 +155,36 @@ describe('Auth E2E Tests (e2e)', () => {
     ]);
   });
 
+  it('GET /card/:id => should Not Found if card does not exist', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, user);
+    const card = await new CardsFactory(prisma, cryptr).persist(user);
+    await prisma.cards.delete({
+      where: {
+        id: card.id,
+      },
+    });
+
+    const response = await request(app.getHttpServer())
+      .get(`/cards/${card.id}`)
+      .set('Authorization', `Bearer ${token.token}`);
+
+    expect(response.status).toBe(404);
+  });
+
+  it('GET /card/:id => should Forbidden if card belongs to another user', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const card = await new CardsFactory(prisma, cryptr).persist(user);
+    const anotherUser = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, anotherUser);
+
+    const response = await request(app.getHttpServer())
+      .get(`/cards/${card.id}`)
+      .set('Authorization', `Bearer ${token.token}`);
+
+    expect(response.status).toBe(403);
+  });
+
   it('GET /card/:id => should return 200 and card', async () => {
     const user = await new UserFactory(prisma).persist();
     const token = await E2EUtils.authenticate(jwt, user);
@@ -108,13 +204,43 @@ describe('Auth E2E Tests (e2e)', () => {
     });
   });
 
-  it('DELETE /credentials/:id => should delete a credential', async () => {
+  it('DELETE /card/:id => should return Not Found if card does not exist', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, user);
+    const card = await new CardsFactory(prisma, cryptr).persist(user);
+    await prisma.cards.delete({
+      where: {
+        id: card.id,
+      },
+    });
+
+    const response = await request(app.getHttpServer())
+      .delete(`/cards/${card.id}`)
+      .set('Authorization', `Bearer ${token.token}`);
+
+    expect(response.status).toBe(404);
+  });
+
+  it('DELETE /card/:id => should Forbidden if card belongs to another user', async () => {
+    const user = await new UserFactory(prisma).persist();
+    const card = await new CardsFactory(prisma, cryptr).persist(user);
+    const anotherUser = await new UserFactory(prisma).persist();
+    const token = await E2EUtils.authenticate(jwt, anotherUser);
+
+    const response = await request(app.getHttpServer())
+      .delete(`/cards/${card.id}`)
+      .set('Authorization', `Bearer ${token.token}`);
+
+    expect(response.status).toBe(403);
+  });
+
+  it('DELETE /card/:id => should delete a credential', async () => {
     const user = await new UserFactory(prisma).persist();
     const token = await E2EUtils.authenticate(jwt, user);
     const card = await new CardsFactory(prisma, cryptr).persist(user);
 
     const response = await request(app.getHttpServer())
-      .delete(`/credentials/${card.id}`)
+      .delete(`/cards/${card.id}`)
       .set('Authorization', `Bearer ${token.token}`);
 
     expect(response.status).toBe(200);
