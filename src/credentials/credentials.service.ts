@@ -56,6 +56,10 @@ export class CredentialsService {
 
   async remove(user: User, id: number) {
     const credential = await this.findOne(user, id);
-    return this.credentialsRepository.remove(credential.id);
+    return await this.credentialsRepository.remove(credential.id);
+  }
+
+  async deleteAll(user: User) {
+    return await this.credentialsRepository.deleteAll(user);
   }
 }

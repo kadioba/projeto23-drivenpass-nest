@@ -1,6 +1,10 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCardDto } from './dto/create-card.dto';
-import { UpdateCardDto } from './dto/update-card.dto';
 import { CardsRepository } from './cards.repository';
 import { CryptrService } from 'src/cryptr/cryptr.service';
 import { User } from '@prisma/client';
@@ -51,5 +55,9 @@ export class CardsService {
   async remove(user: User, id: number) {
     const card = await this.findOne(user, id);
     return await this.cardsRepository.remove(card.id);
+  }
+
+  async deleteAll(user: User) {
+    return await this.cardsRepository.deleteAll(user);
   }
 }

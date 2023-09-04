@@ -40,6 +40,10 @@ export class NotesService {
 
   async remove(user: User, id: number) {
     const note = await this.findOne(user, id);
-    return this.notesRepository.remove(note.id);
+    return await this.notesRepository.remove(note.id);
+  }
+
+  async deleteAll(user: User) {
+    return await this.notesRepository.deleteAll(user);
   }
 }

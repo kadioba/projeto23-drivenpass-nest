@@ -61,4 +61,14 @@ export class CredentialsRepository {
       },
     });
   }
+
+  deleteAll(user: User) {
+    return this.prisma.credentials.deleteMany({
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
+    });
+  }
 }
