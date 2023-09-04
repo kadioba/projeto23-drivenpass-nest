@@ -8,4 +8,8 @@ export class CreateNoteDto {
   @IsString()
   @IsNotEmpty()
   content: string;
+
+  constructor(params?: Partial<CreateNoteDto>) {
+    Object.assign(this, params);
+  }
 }

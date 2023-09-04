@@ -7,6 +7,7 @@ import { SignUpDto } from '../src/auth/dto/signup.dto';
 import { faker } from '@faker-js/faker';
 import { UserFactory } from './factories/user.factory';
 import * as request from 'supertest';
+import { JwtService } from '@nestjs/jwt';
 
 describe('Auth E2E Tests (e2e)', () => {
   let app: INestApplication;
@@ -15,6 +16,7 @@ describe('Auth E2E Tests (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
+      providers: [JwtService],
     })
       .overrideProvider(PrismaService)
       .useValue(prisma)
@@ -38,6 +40,7 @@ describe('Auth E2E Tests (e2e)', () => {
       .send({
         ...user,
       });
+
     expect(response.status).toBe(201);
   });
 
@@ -50,6 +53,7 @@ describe('Auth E2E Tests (e2e)', () => {
         email: user.email,
         password: user.password,
       });
+
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('token');
   });
