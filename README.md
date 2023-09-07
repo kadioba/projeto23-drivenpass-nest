@@ -1,73 +1,78 @@
+# DrivenPass - Gerenciador de Senhas
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Descrição
+O DrivenPass é um gerenciador de senhas projetado para proteger suas informações confidenciais na era digital. Com o aumento constante de ameaças virtuais, é essencial manter senhas seguras e únicas para cada conta online. No entanto, lembrar senhas complexas e longas pode ser um desafio. O DrivenPass resolve esse problema permitindo que você armazene todas as suas senhas de forma segura e lembre-se apenas de uma senha mestra, que também deve ser forte e segura.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+A versão demo para testes do DrivenPass pode acessada em [https://drivenpass-22qv.onrender.com](https://drivenpass-22qv.onrender.com).
 
-## Description
+## Sobre
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+O DrivenPass é inspirado em gerenciadores de senha populares, como 1Password, BitWarden e LastPass. Sua missão é fornecer uma solução confiável para proteger suas credenciais online e simplificar sua vida digital. Algumas das principais funcionalidades do DrivenPass incluem:
 
-## Installation
+- Armazenamento seguro de senhas e credenciais com criptografia avançada.
+- Armazenamento seguro de dados de cartão com criptografia avançada.
+- Armazenamento seguro de notas pessoais.
+- Acesso rápido às suas senhas com uma senha mestra.
+- Acesso seguro em diversos navegadores e dispositivos.
 
+Este projeto foi motivado pela crescente necessidade de segurança cibernética e pela paixão em criar soluções que tornem a vida digital mais segura e conveniente. O objetivo do projeto é continuar aprimorando o DrivenPass e adicionar recursos como novos tipos de dados seguros e a geração de senhas seguras.
+
+### Próximos passos
+
+- Implementação de autenticação de dois fatores utilizando aplicativos moveis.
+- Geração de senhas seguras.
+- Adição de gerenciamento de chaves de API e outros recursos sensiveis.
+
+## Tecnologias
+- NestJS: O DrivenPass é uma API REST desenvolvida utilizando o framework NestJS, que oferece uma estrutura robusta para construir aplicativos web escaláveis.
+- Postgres: Os dados são persistidos em um banco de dados relacional PostgreSQL, visando a confiabilidade, performance e escalabilidade do sistema.
+- TypeScript: A linguagem TypeScript nos permite escrever código mais seguro e legível, facilitando a manutenção do projeto.
+
+## instalação
+
+Para executar o DrivenPass localmente, siga estas etapas:
+
+1. Certifique-se de ter o Node.Js e o Postgres instalados.
+
+2. Clone o projeto no seu computador:
 ```bash
-$ npm install
+git clone https://github.com/kadioba/projeto23-drivenpass-nest
+cd drivenpass
 ```
 
-## Running the app
+3. Instale as dependências do projeto:
+```bash
+npm install
+```
+4. Configure as variáveis de ambiente necessárias, como a chave de criptografia e as configurações de banco de dados, no arquivo `.env`.
+
+## Rodando o projeto
 
 ```bash
-# development
+# desenvolvimento
 $ npm run start
 
-# watch mode
+# modo de depuração
 $ npm run start:dev
 
-# production mode
+# modo de produção
 $ npm run start:prod
 ```
 
-## Test
+Agora você pode acessar o DrivenPass em http://localhost:3000 e começar a usar seu gerenciador de senhas seguro!
+
+## Testes
 
 ```bash
-# unit tests
+# testes unitários
 $ npm run test
 
-# e2e tests
+# testes de integração
 $ npm run test:e2e
 
-# test coverage
+# cobertura de testes
 $ npm run test:cov
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
