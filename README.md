@@ -31,7 +31,7 @@ Este projeto foi motivado pela crescente necessidade de segurança cibernética 
 - Postgres: Os dados são persistidos em um banco de dados relacional PostgreSQL, visando a confiabilidade, performance e escalabilidade do sistema.
 - TypeScript: A linguagem TypeScript nos permite escrever código mais seguro e legível, facilitando a manutenção do projeto.
 
-## instalação
+## Instalação
 
 Para executar o DrivenPass localmente, siga estas etapas:
 
@@ -40,7 +40,7 @@ Para executar o DrivenPass localmente, siga estas etapas:
 2. Clone o projeto no seu computador:
 ```bash
 git clone https://github.com/kadioba/projeto23-drivenpass-nest
-cd drivenpass
+cd projeto23-drivenpass-nest
 ```
 
 3. Instale as dependências do projeto:
