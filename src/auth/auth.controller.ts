@@ -25,6 +25,8 @@ export class AuthController {
     return this.authService.signUp(signUpDto);
   }
 
+  @Post('sign-in')
+  @ApiOperation({ summary: 'Sign In User' })
   @ApiResponse({ status: HttpStatus.OK, description: 'User signed in' })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -34,8 +36,6 @@ export class AuthController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Password or email invalid',
   })
-  @Post('sign-in')
-  @ApiOperation({ summary: 'Sign In User' })
   @HttpCode(HttpStatus.OK)
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto);

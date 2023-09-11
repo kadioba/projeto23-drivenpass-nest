@@ -43,13 +43,14 @@ export class CardsController {
     return this.cardsService.create(user, createCardDto);
   }
 
-  @ApiResponse({ status: 200, description: 'Cards retrieved' })
   @Get()
+  @ApiResponse({ status: 200, description: 'Cards retrieved' })
   @ApiOperation({ summary: 'Get all user Cards' })
   findAll(@RequestUser() user: User) {
     return this.cardsService.findAll(user);
   }
 
+  @Get(':id')
   @ApiResponse({ status: 200, description: 'Card retrieved' })
   @ApiResponse({
     status: 404,
@@ -63,7 +64,6 @@ export class CardsController {
     status: 403,
     description: 'Forbidden',
   })
-  @Get(':id')
   @ApiOperation({ summary: 'Get a user Card' })
   @ApiParam({ name: 'id', description: 'Card ID', example: 1 })
   findOne(
@@ -73,6 +73,7 @@ export class CardsController {
     return this.cardsService.findOne(user, id);
   }
 
+  @Delete(':id')
   @ApiResponse({ status: 200, description: 'Card deletes' })
   @ApiResponse({
     status: 404,
@@ -86,7 +87,6 @@ export class CardsController {
     status: 403,
     description: 'Forbidden',
   })
-  @Delete(':id')
   @ApiOperation({ summary: 'Delete a user Card' })
   @ApiParam({ name: 'id', description: 'Card ID', example: 1 })
   remove(

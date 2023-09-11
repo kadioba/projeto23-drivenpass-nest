@@ -4,7 +4,12 @@ import { AuthGuard } from './guards/auth.guard';
 import { EraseUserDto } from './dto/erase-user.dto';
 import { User as RequestUser } from './decorators/user.decorator';
 import { User } from '@prisma/client';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('App')
 @Controller()
